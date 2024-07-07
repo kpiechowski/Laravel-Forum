@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        
 
-        User::factory()->create([
-            'name' => 'Test User',
+
+
+        $users = User::factory(10)
+            // ->has(Post::factory(20))
+            ->create();
+
+        $posts = Post::factory(200)->recycle($users)->create();
+
+        $comments = Comment::factory(500)->recycle($users)->recycle($posts)->create();
+
+
+        User::factory()
+        ->has(Post::factory(20))
+        ->has(Comment::factory(90)->recycle($posts))
+        ->create([
+            'name' => 'Krzysztof Testowy',
             'email' => 'test@example.com',
+            'password' => 'password'
         ]);
+
     }
 }
